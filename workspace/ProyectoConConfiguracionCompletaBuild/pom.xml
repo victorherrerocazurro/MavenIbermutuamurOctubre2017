@@ -1,0 +1,144 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>es.ibermutuamur</groupId>
+	<artifactId>ConfiguracionCompletaBuild</artifactId>
+	<version>1.0.3-SNAPSHOT</version>
+	<packaging>war</packaging>
+	<scm>
+		<developerConnection>scm:git:file://C:/CursoMaven/workspace/ConfiguracionCompletaBuild</developerConnection>
+		<connection>scm:git:file://C:/CursoMaven/workspace/ConfiguracionCompletaBuild</connection>
+		<url>scm:git:file://C:/CursoMaven/workspace/ConfiguracionCompletaBuild</url>
+		<tag>HEAD</tag>
+	</scm>
+	<repositories>
+		<repository>
+			<id>archiva.internal</id>
+			<url>http://localhost:8080/repository/internal/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>archiva.snapshots</id>
+			<url>http://localhost:8080/repository/snapshots/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	<distributionManagement>
+		<repository>
+			<uniqueVersion>false</uniqueVersion>
+			<id>archiva.internal</id>
+			<name>Releases</name>
+			<url>http://localhost:8080/repository/internal</url>
+			<layout>default</layout>
+		</repository>
+		<snapshotRepository>
+			<uniqueVersion>true</uniqueVersion>
+			<id>archiva.snapshots</id>
+			<name>Snapshots</name>
+			<url>http://localhost:8080/repository/snapshots</url>
+			<layout>default</layout>
+		</snapshotRepository>
+	</distributionManagement>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.sonarsource.scanner.maven</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+				<version>3.3.0.603</version>
+			</plugin>
+			<plugin>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.3</version>
+				<configuration>
+					<connectionUrl>${scm.developerConnection}</connectionUrl>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
+			<!-- <plugin> <artifactId>maven-surefire-plugin</artifactId> <configuration> 
+				<argLine>${surefireArgLine}</argLine> <includes> <include>**/*UT.java</include> 
+				</includes> </configuration> </plugin> <plugin> <artifactId>maven-failsafe-plugin</artifactId> 
+				<configuration> <includes> <include>**/*IT.java</include> </includes> </configuration> 
+				<executions> <execution> <id>pasar test integracion</id> <phase>integration-test</phase> 
+				<goals> <goal>integration-test</goal> </goals> </execution> <execution> <id>validar 
+				pruebas integracion</id> <phase>verify</phase> <goals> <goal>verify</goal> 
+				</goals> </execution> </executions> </plugin> <plugin> <groupId>org.codehaus.cargo</groupId> 
+				<artifactId>cargo-maven2-plugin</artifactId> <version>1.4.18</version> <configuration> 
+				<wait>true</wait> <container> <containerId>tomcat8x</containerId> <home>C:\Users\madtocurso01\Downloads\apache-tomcat-8.5.23</home> 
+				<type>installed</type> </container> <configuration> <type>existing</type> 
+				<home>C:\Users\madtocurso01\Downloads\apache-tomcat-8.5.23</home> </configuration> 
+				<deployables> <deployable> <groupId>es.ibermutuamur</groupId> <artifactId>ConfiguracionCompletaBuild</artifactId> 
+				<type>war</type> <pingURL>http://localhost:8080/ConfiguracionCompletaBuild/index.html</pingURL> 
+				</deployable> </deployables> </configuration> <executions> <execution> <id>arrancar-servidor</id> 
+				<phase>pre-integration-test</phase> <goals> <goal>start</goal> </goals> </execution> 
+				<execution> <id>parar-servidor</id> <phase>post-integration-test</phase> 
+				<goals> <goal>stop</goal> </goals> </execution> </executions> </plugin> <plugin> 
+				<groupId>org.codehaus.mojo</groupId> <artifactId>sql-maven-plugin</artifactId> 
+				<version>1.5</version> <dependencies> <dependency> <groupId>org.apache.derby</groupId> 
+				<artifactId>derbyclient</artifactId> <version>10.11.1.1</version> </dependency> 
+				</dependencies> <configuration> <username>admin</username> <password>admin</password> 
+				<url>jdbc:derby://localhost:1527/parejas;create=true</url> <driver>org.apache.derby.jdbc.ClientDriver</driver> 
+				<settingsKey>derbyDB</settingsKey> <printResultSet>true</printResultSet> 
+				</configuration> <executions> <execution> <id>default-cli</id> <goals> <goal>execute</goal> 
+				</goals> <phase>pre-integration-test</phase> <configuration> <autocommit>true</autocommit> 
+				<srcFiles> <srcFile>sql/prepareIT.sql</srcFile> </srcFiles> </configuration> 
+				</execution> </executions> </plugin> <plugin> <groupId>org.apache.maven.plugins</groupId> 
+				<artifactId>maven-antrun-plugin</artifactId> <version>1.6</version> <executions> 
+				<execution> <id>start-derby</id> <phase>package</phase> <configuration> <target> 
+				<exec executable="cmd.exe" spawn="true"> <arg value="/c" /> <arg value="C:\Users\madtocurso01\Downloads\db-derby-10.14.1.0-bin\bin\startNetworkServer.bat" 
+				/> </exec> </target> </configuration> <goals> <goal>run</goal> </goals> </execution> 
+				<execution> <id>stop-derby</id> <phase>post-integration-test</phase> <configuration> 
+				<target> <exec executable="cmd.exe" spawn="true"> <arg value="/c" /> <arg 
+				value="C:\Users\madtocurso01\Downloads\db-derby-10.14.1.0-bin\bin\stopNetworkServer.bat" 
+				/> </exec> </target> </configuration> <goals> <goal>run</goal> </goals> </execution> 
+				</executions> </plugin> <plugin> <groupId>org.jacoco</groupId> <artifactId>jacoco-maven-plugin</artifactId> 
+				<version>0.7.5.201505241946</version> <executions> <execution> <id>pre-unit-test</id> 
+				<goals> <goal>prepare-agent</goal> </goals> <configuration> <dataFile>${project.build.directory}/jacoco-ut.exec</dataFile> 
+				<propertyName>surefireArgLine</propertyName> </configuration> </execution> 
+				</executions> </plugin> -->
+		</plugins>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+			<version>2.53.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<!-- <reporting> <plugins> <plugin> <groupId>org.apache.maven.plugins</groupId> 
+		<artifactId>maven-project-info-reports-plugin</artifactId> <version>2.9</version> 
+		</plugin> <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-javadoc-plugin</artifactId> 
+		</plugin> <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-surefire-report-plugin</artifactId> 
+		<version>2.12.4</version> <reportSets> <reportSet> <id>integration-tests</id> 
+		<reports> <report>failsafe-report-only</report> <report>report-only</report> 
+		</reports> </reportSet> </reportSets> </plugin> <plugin> <groupId>org.apache.maven.plugins</groupId> 
+		<artifactId>maven-jxr-plugin</artifactId> <version>2.5</version> </plugin> 
+		<plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-checkstyle-plugin</artifactId> 
+		<version>2.9.1</version> </plugin> <plugin> <groupId>org.apache.maven.plugins</groupId> 
+		<artifactId>maven-pmd-plugin</artifactId> <version>3.6</version> <configuration> 
+		<linkXref>true</linkXref> </configuration> </plugin> <plugin> <groupId>org.jacoco</groupId> 
+		<artifactId>jacoco-maven-plugin</artifactId> <version>0.7.5.201505241946</version> 
+		</plugin> <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-changelog-plugin</artifactId> 
+		<version>2.2</version> </plugin> </plugins> </reporting> -->
+</project>
